@@ -202,6 +202,20 @@ Product records belong in the database; customer-facing uploaded images belong i
 - User signoff: PENDING.
 - Phase status: in progress; awaiting human review and creative-direction approval.
 
+### Phase 2 amendment — mobile-first rebuild and Paper Neon, 2026-11-03
+
+- Amendment GO: on 2026-11-03 the user dropped the blue watercolor direction, kept the neon concept, asked for a new 2026 homepage direction designed by the assistant, and added a scroll-driven vending machine (a weighted silver crank that reverses on scroll-up and dispenses a sticker) as the centrepiece, tied to the 1990s room. The user also directed that the neon concept be rebuilt on the new mobile standard and that Hays stay out of customer-facing copy.
+- Approved scope: delete the blue concept; add the Paper Neon homepage; rebuild the neon homepage mobile-first while keeping its art direction; draw the machine as vector art; wire real artwork with poster and failure fallbacks. No shop, product, listing, or machine pages; no stack, service, or dependency decisions.
+- Push authorization: branch pushes under the `RosenthalMark` account are cleared. Publication of artwork or mockup media is not authorized.
+- Review target: branch `phase-2-homepage`; commit SHA recorded below.
+- Technical checks (evidence: static server on 127.0.0.1:4173, Chromium via the preview tools): all three pages return 200; no horizontal overflow at 432×751; `homepage-artwork.png` and `bunny-poster.png` load at 2870px and 2500px; the neon page's menu toggles `aria-expanded` and closes on Escape; no occurrence of "Hays" in any page.
+- Crank checks: dispatch-driven verification because the preview tab was hidden. At 90% section progress the handle reports `--turn: 269.9deg`, `dispensed` is set, and the note reads "It dropped"; at 20% it rewinds to `59.9deg` and the sticker hides. Repaint comes from a capture-phase scroll listener, so it does not depend on animation frames.
+- Known limitations: the supplied hero video is HEVC/H.265, so Chromium aborts playback and shows the poster (observed: media requests aborted, no `playing` event). The portrait hero slot probes `assets/hero-mobile.mp4` with a HEAD request, which logs one 404 until that file is supplied. Real wheel input and animation frames are starved in a hidden tab, so scroll-linked motion was verified by dispatched events, not by a human scrolling. The machine is illustrative SVG because no machine photography exists in the repository. Mockup media remains uncommitted, so the pages do not render their images on GitHub.
+- Human checks: pending owner review of both pages at phone and desktop widths, including whether the crank feels weighted.
+- Assistant signoff: PASS for the local implementation and the checks listed above; this is not a claim of production or stack feasibility.
+- User signoff: PENDING.
+- Phase status: in progress.
+
 ## Phase 3 — Reusable foundations and stack approval
 
 **Purpose:** reuse good software rather than rebuild solved problems, within the project-wide free-only boundary.

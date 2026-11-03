@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f1e7">
+  <meta name="description" content="Rest and Render homepage concept: paper-warm 2026 direction with a scroll-driven 1997 vending machine.">
+  <title>Rest &amp; Render — Paper Neon</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f6f1e7;
+      --paper-deep: #ece3d1;
+      --ink: #14100c;
+      --ink-soft: #4b423a;
+      --magenta: #ff2e88;
+      --violet: #7b4bff;
+      --line: rgba(20, 16, 12, .16);
+      --night: #100b18;
+      --sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+      --serif: ui-serif, Georgia, "Times New Roman", serif;
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.55;
+    }
+    img, svg, video { display: block; max-width: 100%; }
+    a { color: inherit; }
+    a:focus-visible, button:focus-visible { outline: 3px solid var(--violet); outline-offset: 3px; border-radius: 4px; }
+    h1, h2, h3, p { margin: 0; }
+
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: 0;
+      z-index: 99;
+      padding: 12px 18px;
+      background: var(--ink);
+      color: var(--paper);
+      font-weight: 700;
+    }
+    .skip-link:focus { left: 12px; top: 12px; }
+
+    /* ---------- top bar ---------- */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px clamp(16px, 4vw, 40px);
+      padding-top: calc(12px + env(safe-area-inset-top, 0px));
+      background: rgba(246, 241, 231, .93);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+    .wordmark {
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: -.02em;
+      text-decoration: none;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .wordmark span { color: var(--magenta); }
+    .topnav { display: flex; align-items: center; gap: 18px; }
+    .topnav a {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+    }
+    .topnav a:hover { border-bottom-color: var(--magenta); }
+    .topnav a.optional { display: none; }
+    .bag {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 13px;
+      border: 1px solid var(--ink);
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+    .bag b { font-weight: 800; color: var(--magenta); }
+
+    /* ---------- hero ---------- */
+    .hero {
+      position: relative;
+      display: grid;
+      align-items: end;
+      min-height: 100svh;
+      padding: clamp(20px, 5vw, 56px) clamp(16px, 4vw, 40px) calc(clamp(28px, 6vw, 64px) + env(safe-area-inset-bottom, 0px));
+      background: var(--night);
+      color: #fff;
+      overflow: hidden;
+      isolation: isolate;
+    }
+    .hero-media { position: absolute; inset: 0; z-index: -2; overflow: hidden; }
+    .hero-poster, .hero-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+    .hero-video { opacity: 0; transition: opacity .6s ease; }
+    .hero-video.is-playing { opacity: 1; }
+    .hero-scrim {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(10, 7, 16, .55) 0%, rgba(10, 7, 16, .1) 32%, rgba(10, 7, 16, .62) 74%, rgba(10, 7, 16, .93) 100%),
+        radial-gradient(120% 70% at 78% 8%, rgba(255, 46, 136, .34), transparent 62%);
+    }
+    .hero-copy { width: min(100%, 760px); display: grid; gap: 18px; }
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--magenta);
+    }
+    .hero h1 {
+      font-size: clamp(2.1rem, 9.2vw, 4.9rem);
+      font-weight: 800;
+      line-height: .94;
+      letter-spacing: -.035em;
+      text-wrap: balance;
+      text-shadow: 0 2px 30px rgba(0, 0, 0, .35);
+    }
+    .hero h1 em { font-family: var(--serif); font-style: italic; font-weight: 400; }
+    .lede { max-width: 34ch; color: rgba(255, 255, 255, .87); font-size: clamp(15px, 3.9vw, 18px); }
+    .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 4px; }
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 52px;
+      padding: 0 26px;
+      border-radius: 999px;
+      background: var(--magenta);
+      color: #170910;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: .02em;
+      text-decoration: none;
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .cta:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(255, 46, 136, .3); }
+    .cue {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .72);
+    }
+    .cue span { animation: nudge 2.4s ease-in-out infinite; }
+    @keyframes nudge { 0%, 70%, 100% { transform: translateY(0); } 80% { transform: translateY(4px); } }
+
+    /* ---------- sections ---------- */
+    .band { padding: clamp(46px, 9vw, 92px) 0; }
+    .band-head {
+      width: min(100%, 1080px);
+      margin: 0 auto clamp(20px, 4vw, 34px);
+      padding: 0 clamp(16px, 4vw, 40px);
+      display: grid;
+      gap: 10px;
+    }
+    .band-head h2 {
+      font-size: clamp(1.55rem, 6vw, 2.7rem);
+      font-weight: 800;
+      line-height: 1.02;
+      letter-spacing: -.03em;
+      text-wrap: balance;
+    }
+    .band-head p { max-width: 46ch; color: var(--ink-soft); }
+
+    .rail {
+      display: flex;
+      gap: 14px;
+      margin: 0;
+      padding: 4px clamp(16px, 4vw, 40px) 20px;
+      list-style: none;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .rail::-webkit-scrollbar { display: none; }
+    .rail > li { flex: 0 0 80%; min-width: 0; scroll-snap-align: center; }
+    .card {
+      display: grid;
+      gap: 9px;
+      height: 100%;
+      min-height: 210px;
+      padding: 22px 20px;
+      border: 1px solid var(--ink);
+      border-radius: 16px;
+      background: var(--paper-deep);
+      text-decoration: none;
+      transition: transform .18s ease, background .18s ease;
+    }
+    .card:hover { transform: translateY(-3px); background: #fff; }
+    .card-tag {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+    .card strong { font-size: 1.28rem; font-weight: 800; letter-spacing: -.02em; line-height: 1.15; }
+    .card em { font-family: var(--serif); font-size: .98rem; color: var(--ink-soft); }
+    .card-go { margin-top: auto; font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--magenta); }
+
+    /* ---------- the machine ---------- */
+    .machine { position: relative; height: 300vh; background: var(--night); color: #f3edff; }
+    .machine-stage {
+      position: sticky;
+      top: 0;
+      height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: clamp(18px, 4vw, 40px);
+      overflow: hidden;
+    }
+    .machine-glow {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(60% 46% at 50% 58%, rgba(123, 75, 255, .36), transparent 70%),
+        radial-gradient(44% 34% at 82% 18%, rgba(255, 46, 136, .26), transparent 72%);
+    }
+    .machine-inner {
+      position: relative;
+      width: min(100%, 1020px);
+      display: grid;
+      gap: clamp(12px, 2.6vw, 22px);
+      justify-items: center;
+      text-align: center;
+    }
+    .machine-copy { display: grid; gap: 10px; justify-items: center; max-width: 40ch; }
+    .machine-copy h2 {
+      font-size: clamp(1.6rem, 6.4vw, 3rem);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -.035em;
+    }
+    .machine-copy h2 em { font-family: var(--serif); font-style: italic; font-weight: 400; }
+    .crank-note {
+      min-height: 1.5em;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: rgba(243, 237, 255, .66);
+    }
+    .machine-figure {
+      position: relative;
+      height: min(46svh, 330px);
+      aspect-ratio: 240 / 380;
+      filter: drop-shadow(0 26px 40px rgba(0, 0, 0, .55));
+    }
+    .machine-figure svg { width: 100%; height: 100%; overflow: visible; }
+    #crank-handle {
+      transform-box: view-box;
+      transform-origin: 206px 272px;
+      transform: rotate(var(--turn, 0deg));
+      transition: transform .2s cubic-bezier(.25, .8, .3, 1);
+    }
+    .machine-figure.clunk { animation: clunk .42s ease-out; }
+    @keyframes clunk { 0%, 100% { translate: 0 0; } 22% { translate: 0 3px; } 44% { translate: -2px 0; } 66% { translate: 2px 0; } }
+    .dispensed {
+      position: absolute;
+      left: 17%;
+      bottom: 8.5%;
+      width: 34%;
+      display: grid;
+      gap: 4px;
+      justify-items: center;
+      opacity: 0;
+      transform: translateY(14px) scale(.94);
+      transition: opacity .28s ease, transform .34s cubic-bezier(.2, .9, .3, 1.3);
+      pointer-events: none;
+    }
+    .machine-figure.dispensed .dispensed { opacity: 1; transform: translateY(0) scale(1); }
+    .dispensed img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border-radius: 4px;
+      border: 2px solid #f6f1e7;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, .55);
+    }
+    .secret-reveal {
+      margin-top: 6px;
+      padding: 14px 16px;
+      border: 1px solid rgba(243, 237, 255, .28);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, .05);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity .4s ease, transform .4s ease;
+      pointer-events: none;
+    }
+    .secret-reveal.is-open { opacity: 1; transform: translateY(0); }
+    .secret-kicker { font-size: 10px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; color: var(--magenta); }
+    .secret-title { font-family: var(--serif); font-style: italic; font-size: 1.3rem; }
+    .secret-note { font-size: 13px; color: rgba(243, 237, 255, .74); }
+
+    /* ---------- drop + made for you ---------- */
+    .drop {
+      width: min(100%, 1080px);
+      margin: 0 auto;
+      padding: 0 clamp(16px, 4vw, 40px);
+    }
+    .drop-card {
+      display: grid;
+      gap: 14px;
+      padding: clamp(22px, 5vw, 40px);
+      border-radius: 20px;
+      background: var(--ink);
+      color: var(--paper);
+    }
+    .drop-card h2 { font-size: clamp(1.4rem, 5vw, 2.2rem); font-weight: 800; letter-spacing: -.03em; line-height: 1.05; }
+    .drop-card p { max-width: 44ch; color: rgba(246, 241, 231, .78); }
+    .drop-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 22px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: rgba(246, 241, 231, .6);
+    }
+    .drop-meta b { color: var(--magenta); }
+    .made { width: min(100%, 1080px); margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px); display: grid; gap: 20px; }
+    .made h2 { font-size: clamp(1.5rem, 5.6vw, 2.4rem); font-weight: 800; letter-spacing: -.03em; line-height: 1.05; text-wrap: balance; }
+    .made p { max-width: 48ch; color: var(--ink-soft); }
+    .made-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+    .made-list li { display: flex; gap: 10px; font-size: 14px; }
+    .made-list li::before { content: "—"; color: var(--magenta); font-weight: 800; }
+
+    /* ---------- footer ---------- */
+    .site-foot {
+      margin-top: clamp(48px, 9vw, 90px);
+      padding: clamp(26px, 5vw, 44px) clamp(16px, 4vw, 40px) calc(clamp(26px, 5vw, 44px) + env(safe-area-inset-bottom, 0px));
+      border-top: 1px solid var(--line);
+      display: grid;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--ink-soft);
+    }
+    .site-foot strong { color: var(--ink); }
+
+    @media (min-width: 720px) {
+      .topnav a.optional { display: inline-flex; }
+      .rail { display: grid; grid-template-columns: repeat(3, 1fr); overflow: visible; scroll-snap-type: none; width: min(100%, 1080px); margin: 0 auto; }
+      .rail > li { flex: none; }
+      .hero-copy { gap: 22px; }
+    }
+    @media (min-width: 900px) {
+      .machine-inner { grid-template-columns: 1fr auto; justify-items: start; text-align: left; gap: 64px; }
+      .machine-copy { justify-items: start; }
+      .machine-figure { height: min(64svh, 420px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+      #crank-handle { transition: none; }
+    }
+  </style>
+  <noscript>
+    <style>
+      .machine { height: auto; }
+      .machine-stage { position: static; height: auto; padding-block: 56px; }
+      .secret-reveal { opacity: 1; transform: none; }
+      .dispensed { opacity: 1; transform: none; }
+    </style>
+  </noscript>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="topbar">
+    <a class="wordmark" href="#top">Rest <span>&amp;</span> Render</a>
+    <nav class="topnav" aria-label="Primary">
+      <a href="#stacks">Shop</a>
+      <a href="#machine">Machine</a>
+      <a class="optional" href="#made">Made for you</a>
+    </nav>
+    <a class="bag" href="#stacks" aria-label="Bag, empty"><b>0</b> Bag</a>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero-media">
+        <img class="hero-poster" src="../assets/bunny-poster.png" alt="" aria-hidden="true" fetchpriority="high">
+        <video class="hero-video" id="hero-video" muted playsinline loop preload="metadata"
+               poster="../assets/bunny-poster.png" aria-hidden="true" tabindex="-1"
+               data-portrait-src="../assets/hero-mobile.mp4">
+          <source src="../assets/bunny-intro.mp4" type="video/mp4">
+        </video>
+        <div class="hero-scrim"></div>
+      </div>
+      <div class="hero-copy">
+        <p class="eyebrow">Rest &amp; Render · printed in Texas</p>
+        <h1 id="hero-title">Some of these are too good to <em>stick</em> anywhere.</h1>
+        <p class="lede">Hand-drawn stickers and cards on real paper — the kind you keep in a drawer because they're too nice to use.</p>
+        <div class="hero-actions">
+          <a class="cta" href="#stacks">Take a look</a>
+          <span class="cue"><span aria-hidden="true">↓</span> There's a machine in here</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" id="stacks" aria-labelledby="stacks-title">
+      <div class="band-head">
+        <h2 id="stacks-title">Start with something small</h2>
+        <p>Three ways in. Everything else is further down, behind a glass window.</p>
+      </div>
+      <ul class="rail">
+        <li>
+          <a class="card" href="#stacks">
+            <span class="card-tag">Stickers</span>
+            <strong>Sheets and singles</strong>
+            <em>Halloween, succulents, and the ones you'll hoard instead of use.</em>
+            <span class="card-go">Look →</span>
+          </a>
+        </li>
+        <li>
+          <a class="card" href="#stacks">
+            <span class="card-tag">Cards</span>
+            <strong>For someone specific</strong>
+            <em>Greeting cards for the people who keep every note you've ever written.</em>
+            <span class="card-go">Look →</span>
+          </a>
+        </li>
+        <li>
+          <a class="card" href="#made">
+            <span class="card-tag">Made for you</span>
+            <strong>Your idea, drawn</strong>
+            <em>Send the picture in your head. It comes back on paper in a few weeks.</em>
+            <span class="card-go">Start here →</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="machine" id="machine" aria-labelledby="machine-title">
+      <div class="machine-stage">
+        <div class="machine-glow" aria-hidden="true"></div>
+        <div class="machine-inner">
+          <div class="machine-copy">
+            <p class="eyebrow">The 1997 corner</p>
+            <h2 id="machine-title">Turn the <em>crank.</em></h2>
+            <p id="crank-note" class="crank-note">Scroll to turn the handle</p>
+            <div class="secret-reveal" id="secret-reveal">
+              <p class="secret-kicker">You found it</p>
+              <p class="secret-title">The 1997 room</p>
+              <p class="secret-note">Chrome, coils, CRT glow — the throwback page this machine is meant to open. Not built yet; this is where it will live.</p>
+            </div>
+          </div>
+
+          <div class="machine-figure" id="machine-figure">
+            <svg viewBox="0 0 240 380" role="img" aria-label="Illustrated 1990s sticker vending machine with a silver crank handle">
+              <defs>
+                <linearGradient id="body" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0" stop-color="#e3d9c2"/>
+                  <stop offset=".45" stop-color="#f8f2e3"/>
+                  <stop offset="1" stop-color="#ded3ba"/>
+                </linearGradient>
+                <linearGradient id="chrome" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#fbfbfd"/>
+                  <stop offset=".34" stop-color="#aeb5c1"/>
+                  <stop offset=".56" stop-color="#eef1f7"/>
+                  <stop offset=".78" stop-color="#828a99"/>
+                  <stop offset="1" stop-color="#d3d9e2"/>
+                </linearGradient>
+                <radialGradient id="glass" cx=".5" cy=".18" r=".95">
+                  <stop offset="0" stop-color="#40305f"/>
+                  <stop offset="1" stop-color="#0d0a13"/>
+                </radialGradient>
+                <linearGradient id="glare" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#ffffff" stop-opacity=".26"/>
+                  <stop offset=".55" stop-color="#ffffff" stop-opacity="0"/>
+                </linearGradient>
+                <clipPath id="bodyClip"><rect x="18" y="8" width="204" height="356" rx="12"/></clipPath>
+              </defs>
+
+              <ellipse cx="120" cy="373" rx="96" ry="7" fill="#000" opacity=".45"/>
+
+              <rect x="18" y="8" width="204" height="356" rx="12" fill="url(#body)" stroke="#14100c" stroke-width="2.5"/>
+              <g clip-path="url(#bodyClip)">
+                <rect x="18" y="8" width="18" height="356" fill="#7b4bff" opacity=".92"/>
+                <rect x="196" y="8" width="26" height="356" fill="#ff2e88" opacity=".92"/>
+                <rect x="18" y="8" width="204" height="46" fill="#14100c"/>
+              </g>
+              <text x="120" y="30" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="800" letter-spacing="2.4" fill="#f6f1e7">REST &amp; RENDER</text>
+              <text x="120" y="45" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-size="7" font-weight="700" letter-spacing="3.4" fill="#ff2e88">STICKER CO. · 1997</text>
+
+              <rect x="40" y="64" width="150" height="182" rx="7" fill="url(#glass)" stroke="#c9c0aa" stroke-width="3"/>
+              <rect x="40" y="64" width="150" height="182" rx="7" fill="url(#glare)"/>
+
+              <g stroke="#b9bec8" stroke-width="2.6" fill="none" opacity=".85">
+                <path d="M48 104 q11 -13 22 0 t22 0 t22 0 t22 0 t22 0 t22 0"/>
+                <path d="M48 158 q11 -13 22 0 t22 0 t22 0 t22 0 t22 0 t22 0"/>
+                <path d="M48 212 q11 -13 22 0 t22 0 t22 0 t22 0 t22 0 t22 0"/>
+              </g>
+              <g>
+                <rect x="62" y="90" width="17" height="17" rx="3" fill="#ff2e88" transform="rotate(-8 70 98)"/>
+                <rect x="106" y="92" width="17" height="17" rx="3" fill="#f6f1e7" transform="rotate(6 114 100)"/>
+                <rect x="150" y="90" width="17" height="17" rx="3" fill="#7b4bff" transform="rotate(-4 158 98)"/>
+                <rect x="62" y="144" width="17" height="17" rx="3" fill="#f6f1e7" transform="rotate(5 70 152)"/>
+                <rect x="106" y="146" width="17" height="17" rx="3" fill="#ff2e88" transform="rotate(-6 114 154)"/>
+                <rect x="150" y="144" width="17" height="17" rx="3" fill="#f6f1e7" transform="rotate(9 158 152)"/>
+                <rect x="62" y="198" width="17" height="17" rx="3" fill="#7b4bff" transform="rotate(-5 70 206)"/>
+                <rect x="106" y="200" width="17" height="17" rx="3" fill="#f6f1e7" transform="rotate(7 114 208)"/>
+                <rect x="150" y="198" width="17" height="17" rx="3" fill="#ff2e88" transform="rotate(-9 158 206)"/>
+              </g>
+
+              <rect x="196" y="86" width="16" height="30" rx="3" fill="#9aa2b0" stroke="#5f6673" stroke-width="1.6"/>
+              <rect x="200" y="92" width="8" height="17" rx="2" fill="#0d0a13"/>
+
+              <rect x="40" y="300" width="122" height="46" rx="6" fill="#0d0a13" stroke="#6d7380" stroke-width="2.6"/>
+              <rect x="46" y="304" width="110" height="9" rx="4" fill="url(#chrome)" opacity=".7"/>
+
+              <g id="crank-handle">
+                <circle cx="206" cy="272" r="20" fill="url(#chrome)" stroke="#68707d" stroke-width="2"/>
+                <circle cx="206" cy="272" r="6" fill="#525a67"/>
+                <rect x="199" y="230" width="14" height="36" rx="6" fill="url(#chrome)" stroke="#68707d" stroke-width="1.8"/>
+                <circle cx="206" cy="226" r="12" fill="url(#chrome)" stroke="#68707d" stroke-width="1.8"/>
+              </g>
+            </svg>
+            <div class="dispensed">
+              <img src="../assets/bunny-poster.png" alt="">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" aria-label="Current drop">
+      <div class="drop">
+        <div class="drop-card">
+          <p class="eyebrow">One deal at a time</p>
+          <h2>Right now it's the Halloween sheet.</h2>
+          <p>When a sheet sells out it stays on the shelf so you can see what you missed. Then a different deal takes its place.</p>
+          <div class="drop-meta">
+            <span><b>Live</b> Halloween pack</span>
+            <span>Ships US + Canada</span>
+            <span>Custom orders open</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" id="made" aria-labelledby="made-title">
+      <div class="band-head">
+        <h2 id="made-title">Have something in mind?</h2>
+        <p>Custom work is drawn to order and paid upfront, so nobody is drawing into a maybe.</p>
+      </div>
+      <div class="made">
+        <ul class="made-list">
+          <li>Send the idea, a reference, or a very bad drawing.</li>
+          <li>You get up to three directions to choose from.</li>
+          <li>Two to four weeks from yes to paper.</li>
+        </ul>
+        <a class="cta" href="#made">Start a request</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-foot">
+    <p><strong>Rest &amp; Render</strong> — stickers, cards, and small paper things.</p>
+    <p>Printed in Texas. Ships US + Canada. One deal at a time.</p>
+    <p>Local design concept. Navigation targets, the bag, and custom requests are placeholders; the 1997 room is not built yet.</p>
+  </footer>
+
+  <script>
+    (() => {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const video = document.getElementById('hero-video');
+
+      /* Hero video: prefers a portrait cut when the file exists and the
+         viewport is portrait, otherwise keeps the landscape source. The
+         poster stays visible whenever playback is unavailable. */
+      const startHero = () => {
+        if (!video || reduce.matches) return;
+        video.play().catch(() => {});
+      };
+      if (video) {
+        video.addEventListener('playing', () => video.classList.add('is-playing'));
+        const portrait = video.dataset.portraitSrc;
+        const wantsPortrait = window.matchMedia('(orientation: portrait)').matches
+          && window.matchMedia('(max-width: 719px)').matches;
+        if (portrait && wantsPortrait) {
+          fetch(portrait, { method: 'HEAD' })
+            .then(response => {
+              if (!response.ok) return;
+              video.src = portrait;
+              video.load();
+            })
+            .catch(() => {})
+            .then(startHero);
+        } else {
+          startHero();
+        }
+      }
+
+      /* Crank: scroll position drives the handle turn and the dispense,
+         so scrolling back up genuinely rewinds it. */
+      const section = document.getElementById('machine');
+      const figure = document.getElementById('machine-figure');
+      const note = document.getElementById('crank-note');
+      const reveal = document.getElementById('secret-reveal');
+      if (!section || !figure) return;
+
+      const clamp = value => (value < 0 ? 0 : value > 1 ? 1 : value);
+      let dispensed = false;
+
+      const progress = () => {
+        const travel = section.offsetHeight - window.innerHeight;
+        if (travel <= 80) return 0;
+        return clamp(-section.getBoundingClientRect().top / travel);
+      };
+
+      const paint = value => {
+        figure.style.setProperty('--turn', (value * 300).toFixed(1) + 'deg');
+        const nowOpen = value > 0.74;
+        if (nowOpen !== dispensed) {
+          dispensed = nowOpen;
+          figure.classList.toggle('dispensed', dispensed);
+          if (dispensed && !reduce.matches) {
+            figure.classList.add('clunk');
+            window.setTimeout(() => figure.classList.remove('clunk'), 460);
+          }
+        }
+        if (note) {
+          note.textContent = value < 0.12 ? 'Scroll to turn the handle'
+            : value < 0.55 ? 'It has some weight to it'
+            : value < 0.74 ? 'Keep going'
+            : 'It dropped';
+        }
+        if (reveal) reveal.classList.toggle('is-open', value > 0.9);
+      };
+
+      /* Painted straight from scroll position. The handle's CSS transition
+         supplies the weight, so the turn stays accurate even when animation
+         frames are throttled. Listening in the capture phase on document
+         means it works no matter which element actually scrolls. */
+      const read = () => paint(progress());
+
+      document.addEventListener('scroll', read, { passive: true, capture: true });
+      window.addEventListener('resize', read);
+      window.addEventListener('pageshow', read);
+      read();
+    })();
+  </script>
+</body>
+</html>
