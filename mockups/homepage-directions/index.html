@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#073c73">
+  <title>Rest &amp; Render — Homepage directions</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 32px 20px; color: #f7fbff; background: radial-gradient(ellipse at 18% 8%, #d524cc 0, #412078 35%, transparent 67%), linear-gradient(145deg, #053568, #087db3 58%, #063060); font: 16px/1.5 system-ui, sans-serif; }
+    main { width: min(100%, 840px); }
+    .eyebrow { margin: 0 0 10px; color: #aef6ff; font-size: .74rem; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; }
+    h1 { margin: 0; font: 700 clamp(2rem, 6vw, 4rem)/.98 Georgia, serif; text-shadow: 0 2px 12px #072c58; }
+    .intro { max-width: 55ch; color: #e6f5ff; }
+    .choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 30px; }
+    a { display: block; min-height: 160px; padding: 22px; border: 1px solid rgba(255,255,255,.68); color: inherit; text-decoration: none; background: rgba(7,37,79,.44); box-shadow: 0 15px 38px rgba(0,0,0,.18); transition: transform .2s ease, background .2s ease; }
+    a:hover { transform: translateY(-3px); background: rgba(7,37,79,.68); }
+    a:focus-visible { outline: 3px solid #fff49a; outline-offset: 4px; }
+    h2 { margin: 0 0 8px; font-size: 1.3rem; }
+    .neon { border-top: 5px solid #5af6ff; }
+    .blue { border-top: 5px solid #a9dfff; }
+    .note { margin-top: 30px; font-size: .78rem; color: #d4e9ff; }
+    @media (max-width: 600px) { .choices { grid-template-columns: 1fr; } a { min-height: 0; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">Rest &amp; Render · phase 2</p>
+    <h1>Two ways to say hello.</h1>
+    <p class="intro">Compare two homepage directions for the shop. These are local design concepts; their navigation destinations are placeholders and no shop pages or checkout are built.</p>
+    <nav class="choices" aria-label="Homepage concepts">
+      <a class="neon" href="neon/index.html"><h2>Neon bunny intro</h2><span>Pink and purple glow, a short muted bunny video, and a poster fallback.</span></a>
+      <a class="blue" href="blue/index.html"><h2>Blue watercolor studio</h2><span>Cobalt watercolor, a centered bunny hero, and a calmer gallery mood.</span></a>
+    </nav>
+    <p class="note">Use the browser back button to return here and compare.</p>
+  </main>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="Rest & Render homepage concept.">
+  <title>Rest &amp; Render</title>
+  <style>
+    :root { color-scheme: dark; background: #000; }
+    * { box-sizing: border-box; }
+    html, body { width: 100%; min-height: 100%; margin: 0; background: #000; }
+    body { overflow-x: hidden; }
+    a:focus-visible { outline: 3px solid #fff36a; outline-offset: -3px; }
+
+    #intro-video {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      height: 100svh;
+      margin: 0;
+      object-fit: contain;
+      object-position: center;
+      background: #000;
+    }
+    #intro-video[hidden] { display: none; }
+    #finished[hidden] { display: none; }
+    #finished { min-height: 100vh; background: #000; }
+    .artwork-scene { position: relative; width: 100%; margin: 0 auto; background: #000; }
+    .artwork-image { display: block; width: 100%; height: auto; }
+    .artwork-nav { position: absolute; inset: 0; }
+    .artwork-nav a {
+      position: absolute;
+      top: 4.5%;
+      display: block;
+      height: 5.4%;
+      background: transparent;
+      color: transparent;
+      font-size: 0;
+      text-decoration: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .artwork-nav a:nth-child(1) { left: 67.4%; width: 6.1%; }
+    .artwork-nav a:nth-child(2) { left: 74.7%; width: 6.9%; }
+    .artwork-nav a:nth-child(3) { left: 82.1%; width: 9.3%; }
+    .artwork-nav a:nth-child(4) { left: 91.5%; width: 8.1%; }
+    .artwork-nav a:focus-visible { border-radius: 2px; }
+    .mascot-poster {
+      position: absolute;
+      left: 50%;
+      top: 52%;
+      display: block;
+      width: min(1000px, 92vw, 88vh);
+      height: auto;
+      transform: translate(-50%, -50%);
+      object-fit: contain;
+      pointer-events: none;
+      user-select: none;
+    }
+    .route-placeholder { display: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+  <video id="intro-video" muted playsinline preload="none" aria-label="Muted Rest and Render introduction animation">
+    <source src="../assets/bunny-intro.mp4" type="video/mp4">
+  </video>
+
+  <main id="finished" hidden aria-label="Rest and Render homepage artwork">
+    <div class="artwork-scene" id="home">
+      <img class="artwork-image" src="../assets/homepage-artwork.png" alt="Rest and Render homepage artwork with two large bunny characters framing a dark central area below the colorful header" decoding="async">
+      <nav class="artwork-nav" aria-label="Homepage artwork navigation">
+        <a href="#shop" aria-label="Shop page placeholder">Shop</a>
+        <a href="#home" aria-label="Home">Home</a>
+        <a href="#contact" aria-label="Contact page placeholder">Contact</a>
+        <a href="#about" aria-label="About page placeholder">About</a>
+      </nav>
+      <img class="mascot-poster" src="../assets/bunny-poster.png" alt="Rest and Render emblem with a group of colorful bunny characters" decoding="async">
+    </div>
+    <span class="route-placeholder" id="shop" aria-hidden="true"></span>
+    <span class="route-placeholder" id="contact" aria-hidden="true"></span>
+    <span class="route-placeholder" id="about" aria-hidden="true"></span>
+  </main>
+
+  <script>
+    (() => {
+      const video = document.getElementById('intro-video');
+      const finished = document.getElementById('finished');
+      const sessionKey = 'rest-render-neon-homepage-seen';
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      let transitioned = false;
+
+      const showFinished = () => {
+        if (transitioned) return;
+        transitioned = true;
+        video.pause();
+        video.hidden = true;
+        finished.hidden = false;
+        document.body.style.overflowY = 'auto';
+        try { sessionStorage.setItem(sessionKey, 'true'); } catch (_) {}
+      };
+
+      video.addEventListener('error', showFinished);
+      video.addEventListener('ended', showFinished, { once: true });
+      window.addEventListener('pagehide', () => {
+        // If this page is cached mid-intro, cache the finished state with it.
+        showFinished();
+      });
+      window.addEventListener('pageshow', event => {
+        if (event.persisted) showFinished();
+      });
+
+      const beginAfterLoad = () => {
+        let alreadySeen = false;
+        try { alreadySeen = sessionStorage.getItem(sessionKey) === 'true'; } catch (_) {}
+        if (alreadySeen || reduceMotion.matches) {
+          showFinished();
+          return;
+        }
+
+        // Reserve this tab's one homepage introduction before trying to start it.
+        try { sessionStorage.setItem(sessionKey, 'true'); } catch (_) {}
+        let playRequested = false;
+        const startWhenReady = async () => {
+          if (playRequested || transitioned) return;
+          playRequested = true;
+          try {
+            await video.play();
+          } catch (_) {
+            showFinished();
+          }
+        };
+        video.addEventListener('canplay', startWhenReady, { once: true });
+        video.load();
+        if (video.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) startWhenReady();
+      };
+
+      if (document.readyState === 'complete') beginAfterLoad();
+      else window.addEventListener('load', beginAfterLoad, { once: true });
+    })();
+  </script>
+</body>
+</html>

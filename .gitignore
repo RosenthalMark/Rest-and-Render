@@ -1,0 +1,22 @@
+# Local credentials: never commit this directory.
+/LOCAL-SECRETS/
+/secrets/
+.env
+.env.*
+!.env.example
+
+# Keep existing artwork local until its publication is explicitly approved.
+/ART/
+/Assets/
+/1997 Vending dreams/
+
+# Operating-system metadata.
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Mockup media and archives stay local until artwork publication is approved.
+/mockups/**/assets/
+/mockups/**/*.zip
+
+# Add stack-specific rules when the stack is approved.
