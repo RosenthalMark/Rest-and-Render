@@ -216,6 +216,13 @@ Product records belong in the database; customer-facing uploaded images belong i
 - User signoff: PENDING.
 - Phase status: in progress.
 
+### Publication decision — 2026-11-03
+
+- Owner decision: the artwork publication hold is lifted. `ART/`, `Assets/`, `1997 Vending dreams/`, and `mockups/homepage-directions/assets/` may be tracked in this public repository. The hold originated with a previous agent rather than the owner and is no longer in force.
+- Standing caveat: keep advising on loading weight. Pages should serve web derivatives; originals may also be tracked, because repository size is not a constraint at these volumes (mockup media is about 26 MB, well under GitHub's 50 MB per-file and 100 MB hard limits).
+- Still excluded: `LOCAL-SECRETS/`, environment files, OS metadata, and `mockups/**/*.zip` (a 32 MB duplicate of its own folder).
+- Recorded by the assistant on the owner's explicit instruction in chat. This authorizes repository content only: merge and deployment remain unauthorized.
+
 ## Phase 3 — Reusable foundations and stack approval
 
 **Purpose:** reuse good software rather than rebuild solved problems, within the project-wide free-only boundary.
