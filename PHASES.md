@@ -413,6 +413,7 @@ These are evaluation leads only; recheck current terms and documentation during 
 - Excluded by explicit decision: `mockups/homepage-directions/assets/` (24 MB of PNG and MP4) and `mockups/homepage-directions.zip` (32 MB). New ignore rules hold them locally; they remain unpublished.
 - Ignore verification: `git check-ignore` resolves the zip, the mockup media, `.DS_Store`, `LOCAL-SECRETS/`, and `.env` to explicit `.gitignore` rules. The staged list contained no secret, binary, or artwork file.
 - Known limitation: because the mockup media is unpublished, the committed mockup pages do not render their images when viewed on GitHub.
-- Remote state before push: the GitHub repository existed as a public empty repository with no refs. This push creates its first content as branch `phase-0`; the default branch is not changed.
+- Remote state before push: the GitHub repository existed as a public empty repository with no refs. The push created its first content as branch `phase-0` at `307ff59`.
+- Default branch: GitHub set `phase-0` as the repository default, because the first branch pushed into an empty repository becomes the default. No `main` branch exists yet. Which branch should be the long-lived reviewed line is an open decision for the user.
 - Technical checks: staged file list reviewed before commit; only the checks printed above were run. No browser or runtime verification applies to planning documents.
 - Phase status: unchanged. Phase 0 remains complete for its original local-only scope; Phase 1 and Phase 2 remain in progress and require their own briefs and GOs.
