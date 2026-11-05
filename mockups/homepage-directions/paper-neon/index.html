@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f6f1e7">
-  <meta name="description" content="Rest and Render homepage concept: paper-warm 2026 direction with a scroll-driven 1997 vending machine.">
+  <meta name="description" content="Rest and Render homepage concept: paper-warm 2026 direction with a scroll-driven sticker machine.">
   <title>Rest &amp; Render — Paper Neon</title>
   <style>
     :root {
@@ -115,7 +115,8 @@
       isolation: isolate;
     }
     .hero-media { position: absolute; inset: 0; z-index: -2; overflow: hidden; }
-    .hero-poster, .hero-video {
+    .hero-poster { position: absolute; inset: 0; }
+    .hero-poster img, .hero-video {
       position: absolute;
       inset: 0;
       width: 100%;
@@ -236,7 +237,7 @@
     .card-go { margin-top: auto; font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--magenta); }
 
     /* ---------- the machine ---------- */
-    .machine { position: relative; height: 300vh; background: var(--night); color: #f3edff; }
+    .machine { position: relative; height: 360vh; background: var(--night); color: #f3edff; }
     .machine-stage {
       position: sticky;
       top: 0;
@@ -281,7 +282,13 @@
     }
     .machine-figure {
       position: relative;
-      height: min(46svh, 330px);
+      /* 330px tall capped this at 211px wide on a phone, which left the cabinet
+         floating in the middle of the screen. It is now width-driven: as wide
+         as the stage allows, or as wide as its spare height can carry. The
+         width is always stated, because an automatic one collapses to nothing
+         inside an `auto` grid track. */
+      width: min(100%, calc(min(calc(100svh - 250px), 560px) * 0.64));
+      height: auto;
       aspect-ratio: 1024 / 1600;
     }
     .machine-figure img.machine-hero { width: 100%; height: 100%; object-fit: contain; }
@@ -296,11 +303,11 @@
       height: auto;
       transform: translate(-50%, -50%) rotate(var(--turn, 0deg));
       transform-origin: 50% 50%;
-      transition: transform .2s cubic-bezier(.25, .8, .3, 1);
+      /* No CSS curve here: the handle's weight comes from the script easing
+         toward the scroll position. A transition on top only adds lag. */
+      transition: none;
       pointer-events: none;
     }
-    .machine-figure.clunk { animation: clunk .42s ease-out; }
-    @keyframes clunk { 0%, 100% { translate: 0 0; } 22% { translate: 0 3px; } 44% { translate: -2px 0; } 66% { translate: 2px 0; } }
     .dispensed {
       position: absolute;
       left: 50%;
@@ -311,8 +318,9 @@
       gap: 4px;
       justify-items: center;
       opacity: 0;
-      transform: translateY(14px) scale(.94);
-      transition: opacity .28s ease, transform .34s cubic-bezier(.2, .9, .3, 1.3);
+      /* Starts up inside the slot and falls to rest: no spring, no overshoot. */
+      transform: translateY(-12px) scale(.98);
+      transition: opacity .22s ease-out, transform .55s cubic-bezier(.45, 0, .25, 1);
       pointer-events: none;
     }
     .machine-figure.dispensed .dispensed { opacity: 1; transform: translateY(0) scale(1); }
@@ -325,20 +333,50 @@
       box-shadow: 0 6px 14px rgba(0, 0, 0, .55);
     }
     .secret-reveal {
-      margin-top: 6px;
-      padding: 14px 16px;
+      display: grid;
+      gap: 4px;
+      justify-items: center;
+      /* Sits between the copy and the cabinet, so it is kept shallow: every
+         pixel reserved here reads as dead space above the machine. */
+      margin-top: 2px;
+      padding: 10px 14px;
       border: 1px solid rgba(243, 237, 255, .28);
-      border-radius: 14px;
+      border-radius: 12px;
       background: rgba(255, 255, 255, .05);
       opacity: 0;
       transform: translateY(10px);
-      transition: opacity .4s ease, transform .4s ease;
+      /* visibility keeps the link inside out of the tab order until it shows. */
+      visibility: hidden;
+      transition: opacity .4s ease, transform .4s ease, visibility 0s .4s;
       pointer-events: none;
     }
-    .secret-reveal.is-open { opacity: 1; transform: translateY(0); }
+    .secret-reveal.is-open {
+      opacity: 1;
+      transform: translateY(0);
+      visibility: visible;
+      pointer-events: auto;
+      transition: opacity .4s ease, transform .4s ease, visibility 0s;
+    }
+    .secret-link {
+      justify-self: start;
+      display: inline-flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-top: 4px;
+      padding-bottom: 3px;
+      border-bottom: 2px solid var(--magenta);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--paper);
+      text-decoration: none;
+    }
+    .secret-link span { font-size: 9px; letter-spacing: .14em; color: rgba(243, 237, 255, .55); }
+    .secret-link:focus-visible { outline: 3px solid var(--violet); outline-offset: 4px; }
+    .secret-link:hover { border-bottom-color: var(--paper); }
     .secret-kicker { font-size: 10px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; color: var(--magenta); }
-    .secret-title { font-family: var(--serif); font-style: italic; font-size: 1.3rem; }
-    .secret-note { font-size: 13px; color: rgba(243, 237, 255, .74); }
+    .secret-title { font-family: var(--serif); font-style: italic; font-size: 1.08rem; }
 
     /* ---------- drop + made for you ---------- */
     .drop {
@@ -393,9 +431,11 @@
       .hero-copy { gap: 22px; }
     }
     @media (min-width: 900px) {
-      .machine-inner { grid-template-columns: 1fr auto; justify-items: start; text-align: left; gap: 64px; }
+      /* The second track is measured rather than `auto`: an intrinsically sized
+         cabinet left it at 0px and overflowed it. */
+      .machine-inner { grid-template-columns: 1fr calc(min(64svh, 460px) * 0.64); justify-items: start; text-align: left; gap: 64px; }
       .machine-copy { justify-items: start; }
-      .machine-figure { height: min(64svh, 420px); }
+      .machine-figure { height: min(64svh, 460px); width: 100%; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
@@ -406,7 +446,7 @@
     <style>
       .machine { height: auto; }
       .machine-stage { position: static; height: auto; padding-block: 56px; }
-      .secret-reveal { opacity: 1; transform: none; }
+      .secret-reveal { opacity: 1; transform: none; visibility: visible; pointer-events: auto; }
       .dispensed { opacity: 1; transform: none; }
     </style>
   </noscript>
@@ -427,9 +467,16 @@
   <main id="main">
     <section class="hero" id="top" aria-labelledby="hero-title">
       <div class="hero-media">
-        <img class="hero-poster" src="../assets/poster-web.jpg" alt="" aria-hidden="true" fetchpriority="high">
+        <!-- The still is picked by media query in the browser's own image
+             selection: no script, no event to miss, and only the poster that
+             matches the current viewport is downloaded. -->
+        <picture class="hero-poster">
+          <source media="(orientation: portrait) and (max-width: 719px)" srcset="../assets/poster-portrait.jpg">
+          <img src="../assets/poster-web.jpg" alt="" aria-hidden="true" fetchpriority="high">
+        </picture>
         <video class="hero-video" id="hero-video" muted playsinline loop preload="metadata"
-               poster="../assets/poster-web.jpg" aria-hidden="true" tabindex="-1">
+               poster="../assets/poster-web.jpg" aria-hidden="true" tabindex="-1"
+               data-portrait-src="../assets/hero-portrait-h264.mp4">
           <source src="../assets/intro-h264.mp4" type="video/mp4">
         </video>
         <div class="hero-scrim"></div>
@@ -483,20 +530,20 @@
         <div class="machine-glow" aria-hidden="true"></div>
         <div class="machine-inner">
           <div class="machine-copy">
-            <p class="eyebrow">The 1997 corner</p>
+            <p class="eyebrow">Behind the glass</p>
             <h2 id="machine-title">Turn the <em>crank.</em></h2>
             <p id="crank-note" class="crank-note">Scroll to turn the handle</p>
             <div class="secret-reveal" id="secret-reveal">
               <p class="secret-kicker">You found it</p>
-              <p class="secret-title">The 1997 room</p>
-              <p class="secret-note">Chrome, coils, CRT glow — the throwback page this machine is meant to open. Not built yet; this is where it will live.</p>
+              <p class="secret-title">The Coin-Op Zone</p>
+              <a class="secret-link" href="#machine">Step inside <span>soon</span></a>
             </div>
           </div>
 
           <div class="machine-figure" id="machine-figure">
             <img class="machine-hero" src="../assets/machine-hero-clean.jpg"
                  width="1024" height="1600" decoding="async"
-                 alt="The purple, cream and pink Rest &amp; Render sticker machine from 1997">
+                 alt="The purple, cream and pink Rest &amp; Render sticker machine">
             <img class="machine-bar" src="../assets/machine-bar.png"
                  width="400" height="180" alt="" aria-hidden="true">
             <div class="dispensed">
@@ -541,7 +588,7 @@
   <footer class="site-foot">
     <p><strong>Rest &amp; Render</strong> — stickers, cards, and small paper things.</p>
     <p>Printed in Texas. Ships US + Canada. One deal at a time.</p>
-    <p>Local design concept. Navigation targets, the bag, and custom requests are placeholders; the 1997 room is not built yet.</p>
+    <p>Local design concept. Navigation targets, the bag, and custom requests are placeholders; the Coin-Op Zone is not built yet.</p>
   </footer>
 
   <script>
@@ -549,9 +596,14 @@
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
       const video = document.getElementById('hero-video');
 
-      /* Hero video: prefers a portrait cut when the file exists and the
-         viewport is portrait, otherwise keeps the landscape source. The
-         poster stays visible whenever playback is unavailable. */
+      /* Hero video: plays the portrait cut on portrait phones and the
+         landscape clip everywhere else. The choice is re-made on resize and
+         rotation, because a mockup gets reviewed in a resized window or an
+         emulated device without a reload. Swapping the source directly rather
+         than probing with a HEAD request also works when the mockup is opened
+         straight from disk. The poster stays visible whenever the chosen file
+         cannot play. */
+      const LANDSCAPE_SRC = '../assets/intro-h264.mp4';
       const startHero = () => {
         if (!video || reduce.matches) return;
         video.play().catch(() => {});
@@ -559,20 +611,46 @@
       if (video) {
         video.addEventListener('playing', () => video.classList.add('is-playing'));
         const portrait = video.dataset.portraitSrc;
-        const wantsPortrait = window.matchMedia('(orientation: portrait)').matches
-          && window.matchMedia('(max-width: 719px)').matches;
-        if (portrait && wantsPortrait) {
-          fetch(portrait, { method: 'HEAD' })
-            .then(response => {
-              if (!response.ok) return;
-              video.src = portrait;
-              video.load();
-            })
-            .catch(() => {})
-            .then(startHero);
-        } else {
+        const posterImg = document.querySelector('.hero-poster img');
+        const portraitMQ = window.matchMedia('(orientation: portrait) and (max-width: 719px)');
+        /* Keeps the loop where it was when the source changes underneath it. */
+        const swapSource = src => {
+          if (!src || video.getAttribute('src') === src) return;
+          const resumeAt = video.currentTime;
+          video.src = src;
+          video.load();
+          if (resumeAt > 0) {
+            video.addEventListener('loadedmetadata', () => { video.currentTime = resumeAt; }, { once: true });
+          }
           startHero();
-        }
+        };
+        /* One fallback only: an unplayable portrait file reverts to landscape. */
+        video.addEventListener('error', () => {
+          if (video.getAttribute('src') !== LANDSCAPE_SRC) swapSource(LANDSCAPE_SRC);
+        });
+        const applySource = () => {
+          const wantsPortrait = !!(portrait && portraitMQ.matches);
+          swapSource(wantsPortrait ? portrait : LANDSCAPE_SRC);
+          /* The still shown before playback starts — and the only thing shown
+             when autoplay is blocked or Reduced Motion is on — has to match the
+             clip's aspect, or a square poster gets cropped to a sliver on a
+             9:16 phone. */
+          /* The visible still is chosen by the <picture> media query, so read
+             back whichever source the browser picked and mirror it here. */
+          const still = posterImg && (posterImg.currentSrc || posterImg.src);
+          if (still) video.poster = still;
+        };
+        applySource();
+        portraitMQ.addEventListener('change', applySource);
+        /* Some browsers defer media-query events while the tab is hidden, so
+           the resize and rotation events cover a panel that is resized out of
+           sight. applySource is idempotent, so the extra calls are cheap. */
+        window.addEventListener('resize', applySource);
+        window.addEventListener('orientationchange', applySource);
+        /* A tab resized while hidden does not dispatch the events above until
+           it paints again; re-checking on show picks up the new width. */
+        document.addEventListener('visibilitychange', applySource);
+        window.addEventListener('pageshow', applySource);
       }
 
       /* Crank: scroll position drives the handle turn and the dispense,
@@ -585,6 +663,9 @@
 
       const clamp = value => (value < 0 ? 0 : value > 1 ? 1 : value);
       let dispensed = false;
+      let wanted = 0;  /* where the page says the handle should be */
+      let shown = 0;   /* where the handle actually is */
+      let frame = 0;
 
       const progress = () => {
         const travel = section.offsetHeight - window.innerHeight;
@@ -594,14 +675,12 @@
 
       const paint = value => {
         figure.style.setProperty('--turn', (value * 300).toFixed(1) + 'deg');
-        const nowOpen = value > 0.74;
+        /* Separate thresholds so the sticker cannot flutter on and off while
+           the handle settles right at the edge of its throw. */
+        const nowOpen = dispensed ? value > 0.7 : value > 0.76;
         if (nowOpen !== dispensed) {
           dispensed = nowOpen;
           figure.classList.toggle('dispensed', dispensed);
-          if (dispensed && !reduce.matches) {
-            figure.classList.add('clunk');
-            window.setTimeout(() => figure.classList.remove('clunk'), 460);
-          }
         }
         if (note) {
           note.textContent = value < 0.12 ? 'Scroll to turn the handle'
@@ -609,14 +688,43 @@
             : value < 0.74 ? 'Keep going'
             : 'It dropped';
         }
-        if (reveal) reveal.classList.toggle('is-open', value > 0.9);
+        if (reveal) reveal.classList.toggle('is-open', value > 0.92);
       };
 
-      /* Painted straight from scroll position. The handle's CSS transition
-         supplies the weight, so the turn stays accurate even when animation
-         frames are throttled. Listening in the capture phase on document
-         means it works no matter which element actually scrolls. */
-      const read = () => paint(progress());
+      /* The handle chases the scroll position instead of being welded to it.
+         A thumb flick throws the page further in one frame than the eye can
+         follow, and a welded handle snaps through its whole 300 degrees at
+         that same speed, so the turn is over before it is legible. The chase
+         is rate limited rather than eased: constant speed, never faster than
+         step per frame, so the turn always takes about a second and still
+         rewinds when the page is scrolled back up. */
+      const step = 0.02;
+      const tick = () => {
+        const gap = wanted - shown;
+        if (Math.abs(gap) < 0.001) {
+          shown = wanted;
+          paint(shown);
+          frame = 0;
+          return;
+        }
+        shown += gap > step ? step : gap < -step ? -step : gap;
+        paint(shown);
+        frame = window.requestAnimationFrame(tick);
+      };
+
+      /* Capture phase on document means it works whichever element scrolls. */
+      const read = () => {
+        wanted = progress();
+        /* A hidden tab has its animation frames withheld, so the easing would
+           never run and the handle would sit parked at zero. Reduced motion is
+           the same deal for a different reason: no chase, just the position. */
+        if (reduce.matches || document.hidden) {
+          shown = wanted;
+          paint(shown);
+          return;
+        }
+        if (!frame) frame = window.requestAnimationFrame(tick);
+      };
 
       document.addEventListener('scroll', read, { passive: true, capture: true });
       window.addEventListener('resize', read);

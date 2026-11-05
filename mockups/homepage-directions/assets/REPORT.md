@@ -12,11 +12,13 @@ All derivatives were written to `mockups/homepage-directions/assets/`.
 | `poster-web.jpg` | `1200 × 1200` | `236,937 B` (`231.4 KB`) | Composited `bunny-poster.png` onto `#000000`, resized from `2500 × 2500` to `1200 × 1200` (Lanczos), saved at JPEG quality `82`. |
 | `artwork-web.jpg` | `1600 × 901` | `195,932 B` (`191.3 KB`) | Extracted `homepage-directions/assets/homepage-artwork.png` (`2870 × 1617`) from `mockups/homepage-directions.zip` without modifying the archive, resized to `1600 px` wide, saved at JPEG quality `82`. |
 | `intro-h264.mp4` | `1920 × 1080` | `2,686,622 B` (`2.56 MB`) | Transcoded `bunny-intro.mp4` from HEVC/H.265 to H.264 (`High` profile, `yuv420p`, CRF `25`, maxrate `3.2 Mbps`) + AAC (`96 kbps`), preserved `1920 × 1080` and `8.23s` duration, enabled `+faststart`. |
+| `hero-portrait-h264.mp4` | `720 × 1280` | `1,796,340 B` (`1.71 MB`) | Transcoded the owner's CapCut export `1102(1).mp4` (HEVC/H.265, `1080 × 1920`, `60 fps`, `13.8 Mbps`, AAC stereo) to H.264 (`High` profile, `yuv420p`, CRF `26`, maxrate `1.6 Mbps`, preset `slow`), Lanczos downscale to `720 × 1280`, frame rate reduced to `30 fps`, audio dropped because the hero plays muted, `8.37s` duration preserved, `+faststart` enabled. Serves as the Paper Neon hero's portrait source on phones; `intro-h264.mp4` stays the landscape source. |
+| `poster-portrait.jpg` | `1080 × 1920` | `235,353 B` (`229.8 KB`) | Pulled the frame at `1.2s` from the owner's `1102(1).mp4` master at its native `1080 × 1920`, saved at JPEG `-q:v 4`. Used as the Paper Neon hero's portrait poster so the still shown before playback — and the only thing shown when autoplay is blocked or Reduced Motion is on — matches the 9:16 phone frame instead of cropping the square `poster-web.jpg` down to a sliver. |
 | `store-room.jpg` | `1600 × 893` | `378,174 B` (`369.3 KB`) | Resized `Store_art.jpeg` (`1376 × 768`) to `1600 px` wide (Lanczos), saved at JPEG quality `82`. |
 | `tokyo-band.jpg` | `1400 × 1030` | `231,889 B` (`226.5 KB`) | Resized `Tokyo_art.png` (`871 × 641`) to `1400 px` wide, darkened overall (`0.78×` + `1.08` highlight gamma + `0.78×` top-band gradient over the upper signage) so baked-in text recedes, saved at JPEG quality `80`. |
 | `REPORT.md` | N/A (Markdown) | ~`3.8 KB` | This summary report, measured knob geometry, tool/command log, and quality notes. |
 
-**Total added bytes (all 9 deliverables):** `4,052,480 B` (`3.86 MiB`, well under the `8 MB` cap).
+**Total added bytes (all 11 deliverables):** `6,084,173 B` (`5.80 MiB`, still under the `8 MB` cap). The owner-supplied source `1102(1).mp4` (`14,414,598 B`) is kept locally as the master and is not a page deliverable.
 
 ---
 
