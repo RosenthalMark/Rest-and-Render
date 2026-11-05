@@ -4,7 +4,7 @@
 
 Rest and Render is a planned single-owner sticker and greeting card shop. The user owns its visual and creative decisions. Suggest better alternatives with reasons and tradeoffs; obtain approval before changing the creative direction. No application stack or storefront has been selected or implemented.
 
-`ART/` contains local product originals; `Assets/` holds general site artwork; `1997 Vending dreams/` holds 1990s machine assets. Preserve these folders and do not publish their contents without explicit approval. The currently public GitHub repository makes staged-file review essential. `LOCAL-SECRETS/` contains local credentials: never read, stage, commit, or disclose its contents as part of routine work. Keep folders minimal and purposeful.
+`ART/` contains product originals; `Assets/` holds general site artwork; `1997 Vending dreams/` holds 1990s machine assets. Preserve these folders and their contents. They are tracked in this public repository: the artwork publication hold was lifted by the owner on 2026-11-03, and the earlier hold came from a previous agent rather than the owner. Only credentials, environment files, OS metadata, and archive zips stay local. Because the repository is public, review every staged file before committing. `LOCAL-SECRETS/` contains local credentials: never read, stage, commit, or disclose its contents as part of routine work. Keep folders minimal and purposeful.
 
 ## Phase and review rules
 

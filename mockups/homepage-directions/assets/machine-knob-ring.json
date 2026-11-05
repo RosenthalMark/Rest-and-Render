@@ -1,0 +1,43 @@
+{
+  "image": {
+    "w": 1024,
+    "h": 1600
+  },
+  "knobCenter": {
+    "x": 0.5,
+    "y": 0.5919
+  },
+  "ringOuterRadius": 0.1312,
+  "ringInnerRadius": 0.105,
+  "barHalfLength": 0.1072,
+  "barAngleRestDeg": 0,
+  "percent": {
+    "knobCenter": {
+      "x": 50.0,
+      "y": 59.2
+    },
+    "ringOuterRadius": 13.1,
+    "ringInnerRadius": 10.5,
+    "barHalfLength": 10.7
+  },
+  "pixels": {
+    "knobCenter": {
+      "x": 512.0,
+      "y": 947.0
+    },
+    "ringOuterRadius": 134.3,
+    "ringInnerRadius": 107.5,
+    "barHalfLength": 109.8
+  },
+  "barImage": {
+    "file": "machine-bar.png",
+    "warning": "Ink fills the whole 400x180 canvas. Drawing it at native size makes it 1.8x too big and it overruns the ring.",
+    "scaleOfNatural": 0.55,
+    "css": {
+      "width": "21.46%",
+      "left": "50%",
+      "top": "59.19%",
+      "transform": "translate(-50%, -50%)"
+    }
+  }
+}

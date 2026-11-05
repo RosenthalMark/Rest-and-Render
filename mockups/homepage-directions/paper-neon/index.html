@@ -1,0 +1,736 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f1e7">
+  <meta name="description" content="Rest and Render homepage concept: paper-warm 2026 direction with a scroll-driven sticker machine.">
+  <title>Rest &amp; Render — Paper Neon</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f6f1e7;
+      --paper-deep: #ece3d1;
+      --ink: #14100c;
+      --ink-soft: #4b423a;
+      --magenta: #ff2e88;
+      --violet: #7b4bff;
+      --line: rgba(20, 16, 12, .16);
+      --night: #100b18;
+      --sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+      --serif: ui-serif, Georgia, "Times New Roman", serif;
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.55;
+    }
+    img, svg, video { display: block; max-width: 100%; }
+    a { color: inherit; }
+    a:focus-visible, button:focus-visible { outline: 3px solid var(--violet); outline-offset: 3px; border-radius: 4px; }
+    h1, h2, h3, p { margin: 0; }
+
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: 0;
+      z-index: 99;
+      padding: 12px 18px;
+      background: var(--ink);
+      color: var(--paper);
+      font-weight: 700;
+    }
+    .skip-link:focus { left: 12px; top: 12px; }
+
+    /* ---------- top bar ---------- */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px clamp(16px, 4vw, 40px);
+      padding-top: calc(12px + env(safe-area-inset-top, 0px));
+      background: rgba(246, 241, 231, .93);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+    .wordmark {
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: -.02em;
+      text-decoration: none;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .wordmark span { color: var(--magenta); }
+    .topnav { display: flex; align-items: center; gap: 18px; }
+    .topnav a {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+    }
+    .topnav a:hover { border-bottom-color: var(--magenta); }
+    .topnav a.optional { display: none; }
+    .bag {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 13px;
+      border: 1px solid var(--ink);
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+    .bag b { font-weight: 800; color: var(--magenta); }
+
+    /* ---------- hero ---------- */
+    .hero {
+      position: relative;
+      display: grid;
+      align-items: end;
+      min-height: 100svh;
+      padding: clamp(20px, 5vw, 56px) clamp(16px, 4vw, 40px) calc(clamp(28px, 6vw, 64px) + env(safe-area-inset-bottom, 0px));
+      background: var(--night);
+      color: #fff;
+      overflow: hidden;
+      isolation: isolate;
+    }
+    .hero-media { position: absolute; inset: 0; z-index: -2; overflow: hidden; }
+    .hero-poster { position: absolute; inset: 0; }
+    .hero-poster img, .hero-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+    .hero-video { opacity: 0; transition: opacity .6s ease; }
+    .hero-video.is-playing { opacity: 1; }
+    .hero-scrim {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(10, 7, 16, .55) 0%, rgba(10, 7, 16, .1) 32%, rgba(10, 7, 16, .62) 74%, rgba(10, 7, 16, .93) 100%),
+        radial-gradient(120% 70% at 78% 8%, rgba(255, 46, 136, .34), transparent 62%);
+    }
+    .hero-copy { width: min(100%, 760px); display: grid; gap: 18px; }
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--magenta);
+    }
+    .hero h1 {
+      font-size: clamp(2.1rem, 9.2vw, 4.9rem);
+      font-weight: 800;
+      line-height: .94;
+      letter-spacing: -.035em;
+      text-wrap: balance;
+      text-shadow: 0 2px 30px rgba(0, 0, 0, .35);
+    }
+    .hero h1 em { font-family: var(--serif); font-style: italic; font-weight: 400; }
+    .lede { max-width: 34ch; color: rgba(255, 255, 255, .87); font-size: clamp(15px, 3.9vw, 18px); }
+    .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 4px; }
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 52px;
+      padding: 0 26px;
+      border-radius: 999px;
+      background: var(--magenta);
+      color: #170910;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: .02em;
+      text-decoration: none;
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .cta:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(255, 46, 136, .3); }
+    .cue {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .72);
+    }
+    .cue span { animation: nudge 2.4s ease-in-out infinite; }
+    @keyframes nudge { 0%, 70%, 100% { transform: translateY(0); } 80% { transform: translateY(4px); } }
+
+    /* ---------- sections ---------- */
+    .band { padding: clamp(46px, 9vw, 92px) 0; }
+    .band-head {
+      width: min(100%, 1080px);
+      margin: 0 auto clamp(20px, 4vw, 34px);
+      padding: 0 clamp(16px, 4vw, 40px);
+      display: grid;
+      gap: 10px;
+    }
+    .band-head h2 {
+      font-size: clamp(1.55rem, 6vw, 2.7rem);
+      font-weight: 800;
+      line-height: 1.02;
+      letter-spacing: -.03em;
+      text-wrap: balance;
+    }
+    .band-head p { max-width: 46ch; color: var(--ink-soft); }
+
+    .rail {
+      display: flex;
+      gap: 14px;
+      margin: 0;
+      padding: 4px clamp(16px, 4vw, 40px) 20px;
+      list-style: none;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .rail::-webkit-scrollbar { display: none; }
+    .rail > li { flex: 0 0 80%; min-width: 0; scroll-snap-align: center; }
+    .card {
+      display: grid;
+      gap: 9px;
+      height: 100%;
+      min-height: 210px;
+      padding: 22px 20px;
+      border: 1px solid var(--ink);
+      border-radius: 16px;
+      background: var(--paper-deep);
+      text-decoration: none;
+      transition: transform .18s ease, background .18s ease;
+    }
+    .card:hover { transform: translateY(-3px); background: #fff; }
+    .card-tag {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+    .card strong { font-size: 1.28rem; font-weight: 800; letter-spacing: -.02em; line-height: 1.15; }
+    .card em { font-family: var(--serif); font-size: .98rem; color: var(--ink-soft); }
+    .card-go { margin-top: auto; font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--magenta); }
+
+    /* ---------- the machine ---------- */
+    .machine { position: relative; height: 360vh; background: var(--night); color: #f3edff; }
+    .machine-stage {
+      position: sticky;
+      top: 0;
+      height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: clamp(18px, 4vw, 40px);
+      overflow: hidden;
+      background: radial-gradient(76% 64% at 50% 56%, #000 0%, #000 44%, var(--night) 100%);
+    }
+    .machine-glow {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(60% 46% at 50% 58%, rgba(123, 75, 255, .36), transparent 70%),
+        radial-gradient(44% 34% at 82% 18%, rgba(255, 46, 136, .26), transparent 72%);
+    }
+    .machine-inner {
+      position: relative;
+      width: min(100%, 1020px);
+      display: grid;
+      gap: clamp(12px, 2.6vw, 22px);
+      justify-items: center;
+      text-align: center;
+    }
+    .machine-copy { display: grid; gap: 10px; justify-items: center; max-width: 40ch; }
+    .machine-copy h2 {
+      font-size: clamp(1.6rem, 6.4vw, 3rem);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -.035em;
+    }
+    .machine-copy h2 em { font-family: var(--serif); font-style: italic; font-weight: 400; }
+    .crank-note {
+      min-height: 1.5em;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: rgba(243, 237, 255, .66);
+    }
+    .machine-figure {
+      position: relative;
+      /* 330px tall capped this at 211px wide on a phone, which left the cabinet
+         floating in the middle of the screen. It is now width-driven: as wide
+         as the stage allows, or as wide as its spare height can carry. The
+         width is always stated, because an automatic one collapses to nothing
+         inside an `auto` grid track. */
+      width: min(100%, calc(min(calc(100svh - 250px), 560px) * 0.64));
+      height: auto;
+      aspect-ratio: 1024 / 1600;
+    }
+    .machine-figure img.machine-hero { width: 100%; height: 100%; object-fit: contain; }
+    /* The "1 TURN" handle, cut from the photo. Its ink fills the whole PNG, so
+       it is sized as a share of the cabinet — 21.46% wide — never at native size. */
+    .machine-bar {
+      position: absolute;
+      left: 50%;
+      top: 59.19%;
+      width: 21.46%;
+      max-width: none;
+      height: auto;
+      transform: translate(-50%, -50%) rotate(var(--turn, 0deg));
+      transform-origin: 50% 50%;
+      /* No CSS curve here: the handle's weight comes from the script easing
+         toward the scroll position. A transition on top only adds lag. */
+      transition: none;
+      pointer-events: none;
+    }
+    .dispensed {
+      position: absolute;
+      left: 50%;
+      top: 82%;
+      width: 22%;
+      margin-left: -11%;
+      display: grid;
+      gap: 4px;
+      justify-items: center;
+      opacity: 0;
+      /* Starts up inside the slot and falls to rest: no spring, no overshoot. */
+      transform: translateY(-12px) scale(.98);
+      transition: opacity .22s ease-out, transform .55s cubic-bezier(.45, 0, .25, 1);
+      pointer-events: none;
+    }
+    .machine-figure.dispensed .dispensed { opacity: 1; transform: translateY(0) scale(1); }
+    .dispensed img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border-radius: 4px;
+      border: 2px solid #f6f1e7;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, .55);
+    }
+    .secret-reveal {
+      display: grid;
+      gap: 4px;
+      justify-items: center;
+      /* Sits between the copy and the cabinet, so it is kept shallow: every
+         pixel reserved here reads as dead space above the machine. */
+      margin-top: 2px;
+      padding: 10px 14px;
+      border: 1px solid rgba(243, 237, 255, .28);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .05);
+      opacity: 0;
+      transform: translateY(10px);
+      /* visibility keeps the link inside out of the tab order until it shows. */
+      visibility: hidden;
+      transition: opacity .4s ease, transform .4s ease, visibility 0s .4s;
+      pointer-events: none;
+    }
+    .secret-reveal.is-open {
+      opacity: 1;
+      transform: translateY(0);
+      visibility: visible;
+      pointer-events: auto;
+      transition: opacity .4s ease, transform .4s ease, visibility 0s;
+    }
+    .secret-link {
+      justify-self: start;
+      display: inline-flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-top: 4px;
+      padding-bottom: 3px;
+      border-bottom: 2px solid var(--magenta);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--paper);
+      text-decoration: none;
+    }
+    .secret-link span { font-size: 9px; letter-spacing: .14em; color: rgba(243, 237, 255, .55); }
+    .secret-link:focus-visible { outline: 3px solid var(--violet); outline-offset: 4px; }
+    .secret-link:hover { border-bottom-color: var(--paper); }
+    .secret-kicker { font-size: 10px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; color: var(--magenta); }
+    .secret-title { font-family: var(--serif); font-style: italic; font-size: 1.08rem; }
+
+    /* ---------- drop + made for you ---------- */
+    .drop {
+      width: min(100%, 1080px);
+      margin: 0 auto;
+      padding: 0 clamp(16px, 4vw, 40px);
+    }
+    .drop-card {
+      display: grid;
+      gap: 14px;
+      padding: clamp(22px, 5vw, 40px);
+      border-radius: 20px;
+      background: var(--ink);
+      color: var(--paper);
+    }
+    .drop-card h2 { font-size: clamp(1.4rem, 5vw, 2.2rem); font-weight: 800; letter-spacing: -.03em; line-height: 1.05; }
+    .drop-card p { max-width: 44ch; color: rgba(246, 241, 231, .78); }
+    .drop-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 22px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: rgba(246, 241, 231, .6);
+    }
+    .drop-meta b { color: var(--magenta); }
+    .made { width: min(100%, 1080px); margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px); display: grid; gap: 20px; }
+    .made h2 { font-size: clamp(1.5rem, 5.6vw, 2.4rem); font-weight: 800; letter-spacing: -.03em; line-height: 1.05; text-wrap: balance; }
+    .made p { max-width: 48ch; color: var(--ink-soft); }
+    .made-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+    .made-list li { display: flex; gap: 10px; font-size: 14px; }
+    .made-list li::before { content: "—"; color: var(--magenta); font-weight: 800; }
+
+    /* ---------- footer ---------- */
+    .site-foot {
+      margin-top: clamp(48px, 9vw, 90px);
+      padding: clamp(26px, 5vw, 44px) clamp(16px, 4vw, 40px) calc(clamp(26px, 5vw, 44px) + env(safe-area-inset-bottom, 0px));
+      border-top: 1px solid var(--line);
+      display: grid;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--ink-soft);
+    }
+    .site-foot strong { color: var(--ink); }
+
+    @media (min-width: 720px) {
+      .topnav a.optional { display: inline-flex; }
+      .rail { display: grid; grid-template-columns: repeat(3, 1fr); overflow: visible; scroll-snap-type: none; width: min(100%, 1080px); margin: 0 auto; }
+      .rail > li { flex: none; }
+      .hero-copy { gap: 22px; }
+    }
+    @media (min-width: 900px) {
+      /* The second track is measured rather than `auto`: an intrinsically sized
+         cabinet left it at 0px and overflowed it. */
+      .machine-inner { grid-template-columns: 1fr calc(min(64svh, 460px) * 0.64); justify-items: start; text-align: left; gap: 64px; }
+      .machine-copy { justify-items: start; }
+      .machine-figure { height: min(64svh, 460px); width: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+      .machine-bar { transition: none; }
+    }
+  </style>
+  <noscript>
+    <style>
+      .machine { height: auto; }
+      .machine-stage { position: static; height: auto; padding-block: 56px; }
+      .secret-reveal { opacity: 1; transform: none; visibility: visible; pointer-events: auto; }
+      .dispensed { opacity: 1; transform: none; }
+    </style>
+  </noscript>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="topbar">
+    <a class="wordmark" href="#top">Rest <span>&amp;</span> Render</a>
+    <nav class="topnav" aria-label="Primary">
+      <a href="#stacks">Shop</a>
+      <a href="#machine">Machine</a>
+      <a class="optional" href="#made">Made for you</a>
+    </nav>
+    <a class="bag" href="#stacks" aria-label="Bag, empty"><b>0</b> Bag</a>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero-media">
+        <!-- The still is picked by media query in the browser's own image
+             selection: no script, no event to miss, and only the poster that
+             matches the current viewport is downloaded. -->
+        <picture class="hero-poster">
+          <source media="(orientation: portrait) and (max-width: 719px)" srcset="../assets/poster-portrait.jpg">
+          <img src="../assets/poster-web.jpg" alt="" aria-hidden="true" fetchpriority="high">
+        </picture>
+        <video class="hero-video" id="hero-video" muted playsinline loop preload="metadata"
+               poster="../assets/poster-web.jpg" aria-hidden="true" tabindex="-1"
+               data-portrait-src="../assets/hero-portrait-h264.mp4">
+          <source src="../assets/intro-h264.mp4" type="video/mp4">
+        </video>
+        <div class="hero-scrim"></div>
+      </div>
+      <div class="hero-copy">
+        <p class="eyebrow">Rest &amp; Render · printed in Texas</p>
+        <h1 id="hero-title">Some of these are too good to <em>stick</em> anywhere.</h1>
+        <p class="lede">Hand-drawn stickers and cards on real paper — the kind you keep in a drawer because they're too nice to use.</p>
+        <div class="hero-actions">
+          <a class="cta" href="#stacks">Take a look</a>
+          <span class="cue"><span aria-hidden="true">↓</span> There's a machine in here</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" id="stacks" aria-labelledby="stacks-title">
+      <div class="band-head">
+        <h2 id="stacks-title">Start with something small</h2>
+        <p>Three ways in. Everything else is further down, behind a glass window.</p>
+      </div>
+      <ul class="rail">
+        <li>
+          <a class="card" href="#stacks">
+            <span class="card-tag">Stickers</span>
+            <strong>Sheets and singles</strong>
+            <em>Halloween, succulents, and the ones you'll hoard instead of use.</em>
+            <span class="card-go">Look →</span>
+          </a>
+        </li>
+        <li>
+          <a class="card" href="#stacks">
+            <span class="card-tag">Cards</span>
+            <strong>For someone specific</strong>
+            <em>Greeting cards for the people who keep every note you've ever written.</em>
+            <span class="card-go">Look →</span>
+          </a>
+        </li>
+        <li>
+          <a class="card" href="#made">
+            <span class="card-tag">Made for you</span>
+            <strong>Your idea, drawn</strong>
+            <em>Send the picture in your head. It comes back on paper in a few weeks.</em>
+            <span class="card-go">Start here →</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="machine" id="machine" aria-labelledby="machine-title">
+      <div class="machine-stage">
+        <div class="machine-glow" aria-hidden="true"></div>
+        <div class="machine-inner">
+          <div class="machine-copy">
+            <p class="eyebrow">Behind the glass</p>
+            <h2 id="machine-title">Turn the <em>crank.</em></h2>
+            <p id="crank-note" class="crank-note">Scroll to turn the handle</p>
+            <div class="secret-reveal" id="secret-reveal">
+              <p class="secret-kicker">You found it</p>
+              <p class="secret-title">The Coin-Op Zone</p>
+              <a class="secret-link" href="#machine">Step inside <span>soon</span></a>
+            </div>
+          </div>
+
+          <div class="machine-figure" id="machine-figure">
+            <img class="machine-hero" src="../assets/machine-hero-clean.jpg"
+                 width="1024" height="1600" decoding="async"
+                 alt="The purple, cream and pink Rest &amp; Render sticker machine">
+            <img class="machine-bar" src="../assets/machine-bar.png"
+                 width="400" height="180" alt="" aria-hidden="true">
+            <div class="dispensed">
+              <img src="../assets/poster-web.jpg" alt="">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" aria-label="Current drop">
+      <div class="drop">
+        <div class="drop-card">
+          <p class="eyebrow">One deal at a time</p>
+          <h2>Right now it's the Halloween sheet.</h2>
+          <p>When a sheet sells out it stays on the shelf so you can see what you missed. Then a different deal takes its place.</p>
+          <div class="drop-meta">
+            <span><b>Live</b> Halloween pack</span>
+            <span>Ships US + Canada</span>
+            <span>Custom orders open</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" id="made" aria-labelledby="made-title">
+      <div class="band-head">
+        <h2 id="made-title">Have something in mind?</h2>
+        <p>Custom work is drawn to order and paid upfront, so nobody is drawing into a maybe.</p>
+      </div>
+      <div class="made">
+        <ul class="made-list">
+          <li>Send the idea, a reference, or a very bad drawing.</li>
+          <li>You get up to three directions to choose from.</li>
+          <li>Two to four weeks from yes to paper.</li>
+        </ul>
+        <a class="cta" href="#made">Start a request</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-foot">
+    <p><strong>Rest &amp; Render</strong> — stickers, cards, and small paper things.</p>
+    <p>Printed in Texas. Ships US + Canada. One deal at a time.</p>
+    <p>Local design concept. Navigation targets, the bag, and custom requests are placeholders; the Coin-Op Zone is not built yet.</p>
+  </footer>
+
+  <script>
+    (() => {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const video = document.getElementById('hero-video');
+
+      /* Hero video: plays the portrait cut on portrait phones and the
+         landscape clip everywhere else. The choice is re-made on resize and
+         rotation, because a mockup gets reviewed in a resized window or an
+         emulated device without a reload. Swapping the source directly rather
+         than probing with a HEAD request also works when the mockup is opened
+         straight from disk. The poster stays visible whenever the chosen file
+         cannot play. */
+      const LANDSCAPE_SRC = '../assets/intro-h264.mp4';
+      const startHero = () => {
+        if (!video || reduce.matches) return;
+        video.play().catch(() => {});
+      };
+      if (video) {
+        video.addEventListener('playing', () => video.classList.add('is-playing'));
+        const portrait = video.dataset.portraitSrc;
+        const posterImg = document.querySelector('.hero-poster img');
+        const portraitMQ = window.matchMedia('(orientation: portrait) and (max-width: 719px)');
+        /* Keeps the loop where it was when the source changes underneath it. */
+        const swapSource = src => {
+          if (!src || video.getAttribute('src') === src) return;
+          const resumeAt = video.currentTime;
+          video.src = src;
+          video.load();
+          if (resumeAt > 0) {
+            video.addEventListener('loadedmetadata', () => { video.currentTime = resumeAt; }, { once: true });
+          }
+          startHero();
+        };
+        /* One fallback only: an unplayable portrait file reverts to landscape. */
+        video.addEventListener('error', () => {
+          if (video.getAttribute('src') !== LANDSCAPE_SRC) swapSource(LANDSCAPE_SRC);
+        });
+        const applySource = () => {
+          const wantsPortrait = !!(portrait && portraitMQ.matches);
+          swapSource(wantsPortrait ? portrait : LANDSCAPE_SRC);
+          /* The still shown before playback starts — and the only thing shown
+             when autoplay is blocked or Reduced Motion is on — has to match the
+             clip's aspect, or a square poster gets cropped to a sliver on a
+             9:16 phone. */
+          /* The visible still is chosen by the <picture> media query, so read
+             back whichever source the browser picked and mirror it here. */
+          const still = posterImg && (posterImg.currentSrc || posterImg.src);
+          if (still) video.poster = still;
+        };
+        applySource();
+        portraitMQ.addEventListener('change', applySource);
+        /* Some browsers defer media-query events while the tab is hidden, so
+           the resize and rotation events cover a panel that is resized out of
+           sight. applySource is idempotent, so the extra calls are cheap. */
+        window.addEventListener('resize', applySource);
+        window.addEventListener('orientationchange', applySource);
+        /* A tab resized while hidden does not dispatch the events above until
+           it paints again; re-checking on show picks up the new width. */
+        document.addEventListener('visibilitychange', applySource);
+        window.addEventListener('pageshow', applySource);
+      }
+
+      /* Crank: scroll position drives the handle turn and the dispense,
+         so scrolling back up genuinely rewinds it. */
+      const section = document.getElementById('machine');
+      const figure = document.getElementById('machine-figure');
+      const note = document.getElementById('crank-note');
+      const reveal = document.getElementById('secret-reveal');
+      if (!section || !figure) return;
+
+      const clamp = value => (value < 0 ? 0 : value > 1 ? 1 : value);
+      let dispensed = false;
+      let wanted = 0;  /* where the page says the handle should be */
+      let shown = 0;   /* where the handle actually is */
+      let frame = 0;
+
+      const progress = () => {
+        const travel = section.offsetHeight - window.innerHeight;
+        if (travel <= 80) return 0;
+        return clamp(-section.getBoundingClientRect().top / travel);
+      };
+
+      const paint = value => {
+        figure.style.setProperty('--turn', (value * 300).toFixed(1) + 'deg');
+        /* Separate thresholds so the sticker cannot flutter on and off while
+           the handle settles right at the edge of its throw. */
+        const nowOpen = dispensed ? value > 0.7 : value > 0.76;
+        if (nowOpen !== dispensed) {
+          dispensed = nowOpen;
+          figure.classList.toggle('dispensed', dispensed);
+        }
+        if (note) {
+          note.textContent = value < 0.12 ? 'Scroll to turn the handle'
+            : value < 0.55 ? 'It has some weight to it'
+            : value < 0.74 ? 'Keep going'
+            : 'It dropped';
+        }
+        if (reveal) reveal.classList.toggle('is-open', value > 0.92);
+      };
+
+      /* The handle chases the scroll position instead of being welded to it.
+         A thumb flick throws the page further in one frame than the eye can
+         follow, and a welded handle snaps through its whole 300 degrees at
+         that same speed, so the turn is over before it is legible. The chase
+         is rate limited rather than eased: constant speed, never faster than
+         step per frame, so the turn always takes about a second and still
+         rewinds when the page is scrolled back up. */
+      const step = 0.02;
+      const tick = () => {
+        const gap = wanted - shown;
+        if (Math.abs(gap) < 0.001) {
+          shown = wanted;
+          paint(shown);
+          frame = 0;
+          return;
+        }
+        shown += gap > step ? step : gap < -step ? -step : gap;
+        paint(shown);
+        frame = window.requestAnimationFrame(tick);
+      };
+
+      /* Capture phase on document means it works whichever element scrolls. */
+      const read = () => {
+        wanted = progress();
+        /* A hidden tab has its animation frames withheld, so the easing would
+           never run and the handle would sit parked at zero. Reduced motion is
+           the same deal for a different reason: no chase, just the position. */
+        if (reduce.matches || document.hidden) {
+          shown = wanted;
+          paint(shown);
+          return;
+        }
+        if (!frame) frame = window.requestAnimationFrame(tick);
+      };
+
+      document.addEventListener('scroll', read, { passive: true, capture: true });
+      window.addEventListener('resize', read);
+      window.addEventListener('pageshow', read);
+      read();
+    })();
+  </script>
+</body>
+</html>

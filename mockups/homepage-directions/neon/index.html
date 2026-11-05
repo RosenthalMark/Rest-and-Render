@@ -2,40 +2,100 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#000000">
-  <meta name="description" content="Rest & Render homepage concept.">
-  <title>Rest &amp; Render</title>
+  <meta name="description" content="Rest and Render homepage concept: neon bunny intro, rebuilt mobile-first.">
+  <title>Rest &amp; Render — Neon bunny intro</title>
   <style>
-    :root { color-scheme: dark; background: #000; }
+    :root { color-scheme: dark; background: #000; --accent: #fff36a; }
     * { box-sizing: border-box; }
     html, body { width: 100%; min-height: 100%; margin: 0; background: #000; }
-    body { overflow-x: hidden; }
-    a:focus-visible { outline: 3px solid #fff36a; outline-offset: -3px; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { overflow-x: hidden; color: #fff; font-family: ui-sans-serif, -apple-system, "Helvetica Neue", Arial, sans-serif; }
+    a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+    img { display: block; max-width: 100%; }
 
-    #intro-video {
+    /* ---------- intro ---------- */
+    .intro {
       position: fixed;
       inset: 0;
-      z-index: 10;
-      display: block;
-      width: 100vw;
-      height: 100vh;
-      height: 100svh;
-      margin: 0;
+      z-index: 20;
+      background: #000;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .intro[hidden] { display: none; }
+    #intro-video {
+      width: 100%;
+      height: 100%;
+      max-height: 100svh;
       object-fit: contain;
       object-position: center;
       background: #000;
     }
-    #intro-video[hidden] { display: none; }
+    .intro-ui {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: calc(14px + env(safe-area-inset-top, 0px)) 16px 16px;
+      pointer-events: none;
+    }
+    .intro-brand {
+      margin: 0;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .72);
+      text-shadow: 0 1px 12px #000;
+    }
+    .skip {
+      pointer-events: auto;
+      min-height: 44px;
+      padding: 0 16px;
+      border: 1px solid rgba(255, 255, 255, .55);
+      border-radius: 999px;
+      background: rgba(0, 0, 0, .45);
+      color: #fff;
+      font: 800 11px/1 ui-sans-serif, system-ui, sans-serif;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+    }
+    .skip:hover { border-color: var(--accent); color: var(--accent); }
+    .intro-progress {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
+      height: 2px;
+      background: rgba(255, 255, 255, .16);
+    }
+    .intro-progress i {
+      display: block;
+      height: 100%;
+      width: calc(var(--p, 0) * 100%);
+      background: var(--accent);
+    }
+
+    /* ---------- finished homepage ---------- */
     #finished[hidden] { display: none; }
-    #finished { min-height: 100vh; background: #000; }
     .artwork-scene { position: relative; width: 100%; margin: 0 auto; background: #000; }
-    .artwork-image { display: block; width: 100%; height: auto; }
-    .artwork-nav { position: absolute; inset: 0; }
+    .artwork-image { width: 100%; height: auto; }
+    .artwork-nav { position: absolute; inset: 0; display: none; }
     .artwork-nav a {
       position: absolute;
       top: 4.5%;
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
       height: 5.4%;
       background: transparent;
       color: transparent;
@@ -43,11 +103,11 @@
       text-decoration: none;
       -webkit-tap-highlight-color: transparent;
     }
-    .artwork-nav a:nth-child(1) { left: 67.4%; width: 6.1%; }
-    .artwork-nav a:nth-child(2) { left: 74.7%; width: 6.9%; }
-    .artwork-nav a:nth-child(3) { left: 82.1%; width: 9.3%; }
-    .artwork-nav a:nth-child(4) { left: 91.5%; width: 8.1%; }
-    .artwork-nav a:focus-visible { border-radius: 2px; }
+    .artwork-nav a:nth-child(1) { left: 66%; width: 8%; }
+    .artwork-nav a:nth-child(2) { left: 74.4%; width: 7.6%; }
+    .artwork-nav a:nth-child(3) { left: 82%; width: 9.3%; }
+    .artwork-nav a:nth-child(4) { left: 91.4%; width: 8.2%; }
+    .artwork-nav a:focus-visible { border-radius: 3px; }
     .mascot-poster {
       position: absolute;
       left: 50%;
@@ -60,38 +120,135 @@
       pointer-events: none;
       user-select: none;
     }
-    .route-placeholder { display: none; }
 
+    /* ---------- mobile menu ---------- */
+    .explore {
+      position: fixed;
+      right: 16px;
+      bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+      z-index: 30;
+      min-height: 52px;
+      padding: 0 22px;
+      border: 1px solid rgba(255, 255, 255, .5);
+      border-radius: 999px;
+      background: rgba(10, 10, 10, .78);
+      color: #fff;
+      font: 800 12px/1 ui-sans-serif, system-ui, sans-serif;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+    }
+    .explore[aria-expanded="true"] { border-color: var(--accent); color: var(--accent); }
+    .menu {
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+      z-index: 30;
+      margin: 0;
+      padding: 8px;
+      list-style: none;
+      border: 1px solid rgba(255, 255, 255, .28);
+      border-radius: 18px;
+      background: rgba(12, 12, 14, .92);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, .6);
+      display: grid;
+      gap: 2px;
+      transform-origin: bottom right;
+    }
+    .menu[hidden] { display: none; }
+    .menu a {
+      display: flex;
+      align-items: center;
+      min-height: 52px;
+      padding: 0 16px;
+      border-radius: 12px;
+      color: #fff;
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+    .menu a:hover { background: rgba(255, 255, 255, .1); }
+    .menu a small { margin-left: auto; font-size: 10px; font-weight: 800; letter-spacing: .16em; color: rgba(255, 255, 255, .45); text-transform: uppercase; }
+
+    .route-placeholder { display: block; height: 0; }
+    .concept-mark {
+      display: block;
+      padding: 14px 16px calc(14px + env(safe-area-inset-bottom, 0px));
+      text-align: center;
+      color: rgba(255, 255, 255, .45);
+      font-size: 10px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    @media (min-width: 720px) {
+      .artwork-nav { display: block; }
+      .explore { right: 24px; bottom: 24px; }
+      .menu { left: auto; right: 24px; bottom: 88px; width: 300px; }
+    }
+    /* A landscape video in a portrait viewport letterboxes badly; fill instead. */
+    @media (orientation: portrait) and (max-height: 900px) {
+      #intro-video { object-fit: cover; }
+    }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
     }
   </style>
 </head>
 <body>
-  <video id="intro-video" muted playsinline preload="none" aria-label="Muted Rest and Render introduction animation">
-    <source src="../assets/bunny-intro.mp4" type="video/mp4">
-  </video>
+  <div class="intro" id="intro">
+    <video id="intro-video" muted playsinline preload="none" poster="../assets/bunny-poster.png"
+           aria-label="Muted Rest and Render introduction animation">
+      <source src="../assets/intro-h264.mp4" type="video/mp4">
+    </video>
+    <div class="intro-ui">
+      <p class="intro-brand">Rest &amp; Render</p>
+      <button class="skip" id="skip" type="button">Skip</button>
+    </div>
+    <div class="intro-progress" aria-hidden="true"><i id="intro-bar"></i></div>
+  </div>
 
   <main id="finished" hidden aria-label="Rest and Render homepage artwork">
     <div class="artwork-scene" id="home">
-      <img class="artwork-image" src="../assets/homepage-artwork.png" alt="Rest and Render homepage artwork with two large bunny characters framing a dark central area below the colorful header" decoding="async">
+      <img class="artwork-image" src="../assets/homepage-artwork.png"
+           alt="Rest and Render homepage artwork with two large bunny characters framing a dark central area below the colorful header"
+           decoding="async">
       <nav class="artwork-nav" aria-label="Homepage artwork navigation">
         <a href="#shop" aria-label="Shop page placeholder">Shop</a>
         <a href="#home" aria-label="Home">Home</a>
         <a href="#contact" aria-label="Contact page placeholder">Contact</a>
         <a href="#about" aria-label="About page placeholder">About</a>
       </nav>
-      <img class="mascot-poster" src="../assets/bunny-poster.png" alt="Rest and Render emblem with a group of colorful bunny characters" decoding="async">
+      <img class="mascot-poster" src="../assets/bunny-poster.png"
+           alt="Rest and Render emblem with a group of colorful bunny characters" decoding="async">
     </div>
     <span class="route-placeholder" id="shop" aria-hidden="true"></span>
     <span class="route-placeholder" id="contact" aria-hidden="true"></span>
     <span class="route-placeholder" id="about" aria-hidden="true"></span>
+    <span class="concept-mark">Local design concept · destinations are placeholders</span>
   </main>
+
+  <button class="explore" id="explore" type="button" aria-expanded="false" aria-controls="menu" hidden>Menu</button>
+  <ul class="menu" id="menu" hidden>
+    <li><a href="#shop">Shop <small>soon</small></a></li>
+    <li><a href="#about">About <small>soon</small></a></li>
+    <li><a href="#contact">Contact <small>soon</small></a></li>
+    <li><a href="#machine-teaser">The machine <small>soon</small></a></li>
+  </ul>
 
   <script>
     (() => {
+      const intro = document.getElementById('intro');
       const video = document.getElementById('intro-video');
       const finished = document.getElementById('finished');
+      const bar = document.getElementById('intro-bar');
+      const skip = document.getElementById('skip');
+      const explore = document.getElementById('explore');
+      const menu = document.getElementById('menu');
       const sessionKey = 'rest-render-neon-homepage-seen';
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
       let transitioned = false;
@@ -99,30 +256,32 @@
       const showFinished = () => {
         if (transitioned) return;
         transitioned = true;
-        video.pause();
-        video.hidden = true;
+        try { video.pause(); } catch (_) {}
+        intro.hidden = true;
         finished.hidden = false;
+        explore.hidden = false;
         document.body.style.overflowY = 'auto';
         try { sessionStorage.setItem(sessionKey, 'true'); } catch (_) {}
       };
 
-      video.addEventListener('error', showFinished);
-      video.addEventListener('ended', showFinished, { once: true });
-      window.addEventListener('pagehide', () => {
-        // If this page is cached mid-intro, cache the finished state with it.
-        showFinished();
-      });
-      window.addEventListener('pageshow', event => {
-        if (event.persisted) showFinished();
-      });
+      if (video) {
+        video.addEventListener('error', showFinished);
+        video.addEventListener('ended', showFinished, { once: true });
+        video.addEventListener('timeupdate', () => {
+          if (!video.duration) return;
+          bar.style.setProperty('--p', String(video.currentTime / video.duration));
+        });
+      }
+      skip.addEventListener('click', event => { event.stopPropagation(); showFinished(); });
+      intro.addEventListener('click', showFinished);
+
+      window.addEventListener('pagehide', showFinished);
+      window.addEventListener('pageshow', event => { if (event.persisted) showFinished(); });
 
       const beginAfterLoad = () => {
         let alreadySeen = false;
         try { alreadySeen = sessionStorage.getItem(sessionKey) === 'true'; } catch (_) {}
-        if (alreadySeen || reduceMotion.matches) {
-          showFinished();
-          return;
-        }
+        if (alreadySeen || reduceMotion.matches) { showFinished(); return; }
 
         // Reserve this tab's one homepage introduction before trying to start it.
         try { sessionStorage.setItem(sessionKey, 'true'); } catch (_) {}
@@ -130,11 +289,7 @@
         const startWhenReady = async () => {
           if (playRequested || transitioned) return;
           playRequested = true;
-          try {
-            await video.play();
-          } catch (_) {
-            showFinished();
-          }
+          try { await video.play(); } catch (_) { showFinished(); }
         };
         video.addEventListener('canplay', startWhenReady, { once: true });
         video.load();
@@ -143,6 +298,20 @@
 
       if (document.readyState === 'complete') beginAfterLoad();
       else window.addEventListener('load', beginAfterLoad, { once: true });
+
+      /* Mobile menu: the artwork's top-bar destinations are invisible
+         hotspots, which are unusable at thumb size. */
+      const closeMenu = () => {
+        menu.hidden = true;
+        explore.setAttribute('aria-expanded', 'false');
+      };
+      explore.addEventListener('click', () => {
+        const open = menu.hidden;
+        menu.hidden = !open;
+        explore.setAttribute('aria-expanded', String(open));
+      });
+      menu.addEventListener('click', event => { if (event.target.closest('a')) closeMenu(); });
+      document.addEventListener('keydown', event => { if (event.key === 'Escape') closeMenu(); });
     })();
   </script>
 </body>

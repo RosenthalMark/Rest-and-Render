@@ -5,18 +5,17 @@
 .env.*
 !.env.example
 
-# Keep existing artwork local until its publication is explicitly approved.
-/ART/
-/Assets/
-/1997 Vending dreams/
+# Artwork is tracked. The owner lifted the earlier publication hold on
+# 2026-11-03: `ART/`, `Assets/`, `1997 Vending dreams/`, and mockup media
+# may all live in this public repository. Nothing here is ignored for
+# size reasons; keep files web-appropriate and prefer derivatives for pages.
 
 # Operating-system metadata.
 .DS_Store
 Thumbs.db
 Desktop.ini
 
-# Mockup media and archives stay local until artwork publication is approved.
-/mockups/**/assets/
+# Archives stay local: the zip is a duplicate of its own folder.
 /mockups/**/*.zip
 
 # Add stack-specific rules when the stack is approved.
